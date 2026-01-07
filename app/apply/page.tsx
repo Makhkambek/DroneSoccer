@@ -8,6 +8,7 @@ export default function Apply() {
     lastName: '',
     email: '',
     phone: '',
+    telegram: '', // Добавлено новое поле
     age: '',
     experience: '',
     course: '',
@@ -26,11 +27,11 @@ export default function Apply() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically send the data to your backend
+    // Пока просто выводим в консоль, чтобы проверить, что данные собираются
     console.log('Form submitted:', formData);
     setSubmitted(true);
 
-    // Reset form after 3 seconds
+    // Сброс формы через 3 секунды
     setTimeout(() => {
       setSubmitted(false);
       setFormData({
@@ -38,6 +39,7 @@ export default function Apply() {
         lastName: '',
         email: '',
         phone: '',
+        telegram: '',
         age: '',
         experience: '',
         course: '',
@@ -162,6 +164,26 @@ export default function Apply() {
                 </div>
               </div>
 
+              {/* Telegram Field - Added Here */}
+              <div>
+                <label htmlFor="telegram" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Telegram Username <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">@</span>
+                  <input
+                    type="text"
+                    id="telegram"
+                    name="telegram"
+                    value={formData.telegram}
+                    onChange={handleChange}
+                    required
+                    className="w-full pl-8 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary-blue focus:outline-none transition-colors"
+                    placeholder="username"
+                  />
+                </div>
+              </div>
+
               {/* Age and Experience */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -262,7 +284,7 @@ export default function Apply() {
         </div>
       </section>
 
-      {/* Info Section */}
+      {/* Info Section - Unchanged */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">

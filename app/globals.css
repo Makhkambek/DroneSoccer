@@ -25,9 +25,17 @@
   body {
     @apply bg-gray-50 text-gray-900;
   }
+
+  /* Учитываем высоту навигации + спонсорской полосы */
+  /* Спонсорская полоса: ~52px, Навигация: 80px, Итого: ~132px */
+  .pt-20 {
+    padding-top: 8.25rem;
+    /* 132px */
+  }
 }
 
 @layer components {
+
   /* Navigation Links */
   .nav-link {
     @apply text-gray-700 hover:text-primary-blue font-medium transition-colors duration-300 relative;
@@ -96,6 +104,7 @@
       opacity: 0;
       transform: translateY(30px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
