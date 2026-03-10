@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import SuccessModal from '@/components/SuccessModal';
+import Link from 'next/link';
 
 export default function Apply() {
   const [formData, setFormData] = useState({
@@ -78,6 +78,35 @@ export default function Apply() {
       setIsLoading(false);
     }
   };
+
+  if (submitted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-primary-blue flex items-center justify-center px-4 pt-20">
+        <div className="max-w-lg w-full text-center">
+          <div className="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-500/30">
+            <svg className="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+            </svg>
+          </div>
+          <h1 className="font-orbitron text-4xl font-bold text-white mb-4">Application Submitted!</h1>
+          <p className="text-white/80 text-lg mb-3">
+            Thank you, <span className="text-white font-semibold">{formData.firstName}</span>! Your application has been received.
+          </p>
+          <p className="text-white/60 text-sm mb-8">
+            We&apos;ve sent your login credentials to <span className="text-white font-medium">{formData.email}</span>. Check your inbox (and spam folder) — you can log in as soon as your application is reviewed.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link href="/auth/login" className="px-8 py-3 bg-white text-primary-blue font-bold rounded-xl hover:bg-gray-100 transition-all">
+              Go to Login
+            </Link>
+            <Link href="/lessons" className="px-8 py-3 bg-white/20 text-white font-bold rounded-xl hover:bg-white/30 transition-all border border-white/30">
+              Browse Courses
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="pt-20">
@@ -373,12 +402,6 @@ export default function Apply() {
         </div>
       </section>
 
-      {/* Success Modal */}
-      <SuccessModal
-        isOpen={submitted}
-        onClose={handleCloseModal}
-        autoCloseDelay={5000}
-      />
     </div>
   );
 }

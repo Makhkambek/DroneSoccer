@@ -12,8 +12,6 @@ export default function Navigation() {
   const pathname = usePathname();
   const { data: session } = useSession();
 
-  if (pathname?.startsWith('/admin')) return null;
-
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -22,6 +20,8 @@ export default function Navigation() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  if (pathname?.startsWith('/admin')) return null;
 
   const navLinks = [
     { href: '/', label: 'Home' },
@@ -106,11 +106,8 @@ export default function Navigation() {
 
               {session ? (
                 <div className="flex items-center space-x-3">
-                  <Link href="/profile" className="text-sm text-gray-600 hover:text-primary-blue transition-colors">
+                  <Link href="/dashboard" className="text-sm text-gray-600 hover:text-primary-blue transition-colors">
                     {session.user?.name || session.user?.email}
-                    {(session.user as any)?.id && (session.user as any).id !== 'admin' && (
-                      <span className="ml-1 text-gray-400 font-mono">#{(session.user as any).id}</span>
-                    )}
                   </Link>
                   <button
                     onClick={() => signOut({ callbackUrl: '/' })}
@@ -189,7 +186,20 @@ export default function Navigation() {
 
             {session ? (
               <div className="pt-2 border-t border-gray-200">
-                <p className="text-sm text-gray-500 px-4 pb-2">{session.user?.name || session.user?.email}</p>
+                <Link
+                  href="/dashboard"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block py-3 px-4 rounded-lg font-medium text-gray-700 hover:bg-gray-50 hover:text-primary-blue transition-colors"
+                >
+                  My Dashboard
+                </Link>
+                <Link
+                  href="/profile"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block py-3 px-4 rounded-lg font-medium text-gray-700 hover:bg-gray-50 hover:text-primary-blue transition-colors"
+                >
+                  Profile
+                </Link>
                 <button
                   onClick={() => { setIsMobileMenuOpen(false); signOut({ callbackUrl: '/' }); }}
                   className="w-full text-left py-3 px-4 rounded-lg font-medium text-red-600 hover:bg-red-50 transition-colors"

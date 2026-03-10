@@ -52,7 +52,8 @@ export default function LessonPage({ params }: { params: Promise<{ courseId: str
 
       // Check sequential access
       const idx = lessonsData.indexOf(found);
-      const progressData: ProgressEntry[] = Array.isArray(await progressRes.json()) ? await (await fetch(`/api/progress?courseId=${courseId}`)).json() : [];
+      const progressJson = await progressRes.json();
+      const progressData: ProgressEntry[] = Array.isArray(progressJson) ? progressJson : [];
       setProgress(progressData);
 
       if (idx > 0) {
