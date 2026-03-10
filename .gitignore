@@ -43,6 +43,12 @@ next-env.d.ts
 .cursor/
 .junie/
 
+# large binary assets (add manually or use Git LFS)
+public/hero/*.jpg
+public/hero/*.png
+public/videos/*
+!public/videos/README.md
+
 # sensitive runtime data
 data/users.json
 data/applications.json
