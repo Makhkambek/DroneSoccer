@@ -12,6 +12,8 @@ export default function Navigation() {
   const pathname = usePathname();
   const { data: session } = useSession();
 
+  if (pathname?.startsWith('/admin')) return null;
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);

@@ -1,9 +1,6 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 
 interface Student {
   id: string;
@@ -21,20 +18,14 @@ const COURSES = [
 ];
 
 export default function StudentsAdmin() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    if (status === 'unauthenticated') router.push('/admin/login');
-  }, [status, router]);
-
-  useEffect(() => {
-    if (status === 'authenticated') fetchStudents();
-  }, [status]);
+    fetchStudents();
+  }, []);
 
   async function fetchStudents() {
     setLoading(true);
@@ -74,37 +65,27 @@ export default function StudentsAdmin() {
       s.email.toLowerCase().includes(search.toLowerCase())
   );
 
-  if (status === 'loading' || loading) {
+  if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="w-16 h-16 border-4 border-primary-blue border-t-transparent rounded-full animate-spin" />
+      <div className="p-8 flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <Link href="/admin/dashboard" className="text-gray-500 hover:text-gray-700">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-              </svg>
-            </Link>
-            <div>
-              <h1 className="font-orbitron text-2xl font-bold text-gray-900">Students</h1>
-              <p className="text-sm text-gray-500">Manage course access</p>
-            </div>
-          </div>
-          <span className="bg-blue-100 text-blue-700 text-sm font-semibold px-3 py-1 rounded-full">
-            {students.length} students
-          </span>
+    <div className="p-8">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="font-orbitron text-2xl font-bold text-gray-900">Students</h1>
+          <p className="text-sm text-gray-500 mt-0.5">Manage course access</p>
         </div>
-      </header>
+        <span className="bg-blue-100 text-blue-700 text-sm font-semibold px-3 py-1 rounded-full">
+          {students.length} students
+        </span>
+      </div>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl">
         {/* Search */}
         <div className="mb-6">
           <input
@@ -204,7 +185,7 @@ export default function StudentsAdmin() {
             ))}
           </div>
         )}
-      </main>
+      </div>
     </div>
   );
 }
