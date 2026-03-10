@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: dronesoccer
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NEXTAUTH_URL
+        value: https://dronesoccer.onrender.com
+      - key: NEXTAUTH_SECRET
+        generateValue: true
+      - key: ADMIN_EMAIL
+        value: admin@dronesoccer.com
+      - key: ADMIN_PASSWORD
+        value: admin123
+      - key: SMTP_EMAIL
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: NOTIFICATION_EMAIL
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
