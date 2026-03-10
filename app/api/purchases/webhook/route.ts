@@ -2,12 +2,15 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { recordPurchase } from "@/lib/purchases";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-02-25.clover" });
-
 // Stripe webhooks need raw body — disable Next.js body parsing
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    return NextResponse.json({ error: "Payment not configured" }, { status: 503 });
+  }
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: "2026-02-25.clover" });
+
   const body = await request.text();
   const sig = request.headers.get("stripe-signature");
 

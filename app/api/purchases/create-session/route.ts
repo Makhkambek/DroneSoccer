@@ -5,10 +5,12 @@ import { getCourseById } from "@/lib/courses";
 import { hasPurchasedCourse } from "@/lib/purchases";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-02-25.clover" });
-
 export async function POST(request: Request) {
   try {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return NextResponse.json({ error: "Payment not configured" }, { status: 503 });
+    }
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: "2026-02-25.clover" });
     const session = await getServerSession(authOptions);
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
