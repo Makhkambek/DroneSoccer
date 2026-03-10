@@ -29,8 +29,8 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL(`/auth/login?callbackUrl=${encodeURIComponent(pathname)}`, req.url));
   }
 
-  // Unauthenticated user trying to access profile or student dashboard
-  if (!isLoggedIn && (pathname.startsWith("/profile") || pathname.startsWith("/dashboard"))) {
+  // Unauthenticated user trying to access protected student pages
+  if (!isLoggedIn && (pathname.startsWith("/profile") || pathname.startsWith("/dashboard") || pathname.startsWith("/checkout"))) {
     return NextResponse.redirect(new URL(`/auth/login?callbackUrl=${encodeURIComponent(pathname)}`, req.url));
   }
 

@@ -7,10 +7,11 @@ import Stripe from "stripe";
 
 export async function POST(request: Request) {
   try {
-    if (!process.env.STRIPE_SECRET_KEY) {
+    const stripeKey = process.env.STRIPE_SECRET_KEY;
+    if (!stripeKey || stripeKey.includes("REPLACE_ME") || !stripeKey.startsWith("sk_")) {
       return NextResponse.json({ error: "Payment not configured" }, { status: 503 });
     }
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: "2026-02-25.clover" });
+    const stripe = new Stripe(stripeKey, { apiVersion: "2026-02-25.clover" });
     const session = await getServerSession(authOptions);
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 

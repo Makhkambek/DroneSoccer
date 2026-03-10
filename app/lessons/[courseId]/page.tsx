@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useEffect, useState, useCallback } from 'react';
+import { use, useEffect, useState, useCallback, Suspense } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -22,6 +22,8 @@ export default function CoursePage({ params }: { params: Promise<{ courseId: str
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [progress, setProgress] = useState<ProgressEntry[]>([]);
   const [owned, setOwned] = useState(false);
+  const [buyLoading, setBuyLoading] = useState(false);
+  const [buyError, setBuyError] = useState('');
   const [introCompleted, setIntroCompleted] = useState(true);
   const [introVideo, setIntroVideo] = useState<{ videoFile: string | null; duration: number } | null>(null);
   const [showIntro, setShowIntro] = useState(false);
@@ -81,6 +83,34 @@ export default function CoursePage({ params }: { params: Promise<{ courseId: str
   }, [courseId, status, router]);
 
   useEffect(() => { loadData(); }, [loadData]);
+
+  const handleBuyNow = async () => {
+    if (!session) { router.push(`/auth/login?callbackUrl=/lessons/${courseId}`); return; }
+    setBuyLoading(true);
+    setBuyError('');
+    try {
+      const res = await fetch('/api/purchases/create-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ courseId }),
+      });
+      const data = await res.json();
+      if (data.url) { window.location.href = data.url; return; }
+      // Stripe not configured — use demo checkout
+      if (res.status === 503) {
+        router.push(`/checkout/${courseId}`);
+        return;
+      }
+      if (res.status === 403) {
+        setBuyError('Purchase is only available for student accounts. Please apply first.');
+      } else {
+        setBuyError(data.error || 'Something went wrong. Please try again or contact us.');
+      }
+    } catch {
+      setBuyError('Connection error. Please check your internet and try again.');
+    }
+    setBuyLoading(false);
+  };
 
   const handleIntroComplete = () => {
     setIntroCompleted(true);
@@ -298,33 +328,93 @@ export default function CoursePage({ params }: { params: Promise<{ courseId: str
 
           {/* CTA for non-owners */}
           {!owned && (
-            <div className="bg-gradient-to-r from-primary-blue to-blue-800 rounded-2xl p-8 text-center text-white">
-              <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.894L15 14M3 8h12a2 2 0 012 2v4a2 2 0 01-2 2H3a2 2 0 01-2-2v-4a2 2 0 012-2z"/>
-                </svg>
-              </div>
-              <h3 className="font-orbitron text-2xl font-bold mb-2">
-                {priceFormatted} — Get Full Access
-              </h3>
-              <p className="text-white/80 mb-6">
-                Unlock all {lessons.length} lessons and start learning today
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Link
-                  href="/apply"
-                  className="px-8 py-3 bg-white text-primary-blue font-bold rounded-xl hover:bg-gray-100 transition-all"
-                >
-                  Apply Now
-                </Link>
-                {!session && (
-                  <Link
-                    href={`/auth/login?callbackUrl=/lessons/${courseId}`}
-                    className="px-8 py-3 bg-white/20 text-white font-bold rounded-xl hover:bg-white/30 transition-all border border-white/40"
-                  >
-                    Sign In
-                  </Link>
-                )}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="grid md:grid-cols-2">
+                {/* Left: what's included */}
+                <div className="p-8 border-b md:border-b-0 md:border-r border-gray-100">
+                  <h3 className="font-orbitron text-xl font-bold text-gray-900 mb-5">What's included</h3>
+                  <ul className="space-y-3">
+                    {[
+                      `${lessons.length} video lessons`,
+                      `Level: ${course.level}`,
+                      course.duration ? `Duration: ${course.duration}` : null,
+                      'Sequential learning path',
+                      'Progress tracking',
+                      'Certificate of completion',
+                      'Lifetime access',
+                    ].filter(Boolean).map((item) => (
+                      <li key={item} className="flex items-center gap-3 text-gray-700">
+                        <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Right: pricing card */}
+                <div className="p-8 flex flex-col justify-center items-center text-center bg-gray-50">
+                  {course.price > 0 ? (
+                    <>
+                      <p className="text-gray-500 text-sm mb-1">One-time payment</p>
+                      <p className="font-orbitron text-5xl font-bold text-gray-900 mb-1">{priceFormatted}</p>
+                      <p className="text-gray-400 text-sm mb-6">Lifetime access</p>
+
+                      <button
+                        onClick={handleBuyNow}
+                        disabled={buyLoading}
+                        className="w-full max-w-xs py-4 bg-gradient-to-r from-primary-blue to-blue-700 text-white font-bold rounded-xl hover:opacity-90 transition-all text-lg disabled:opacity-60 mb-3"
+                      >
+                        {buyLoading ? 'Redirecting to payment...' : 'Buy Now'}
+                      </button>
+
+                      {buyError && (
+                        <div className="w-full max-w-xs mb-3 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-xs text-left">
+                          {buyError}
+                        </div>
+                      )}
+
+                      <p className="text-xs text-gray-400 mb-1">🔒 Secure payment via Stripe</p>
+                      <p className="text-xs text-gray-400 mb-4">
+                        By purchasing you agree to our{' '}
+                        <Link href="/terms" target="_blank" className="underline hover:text-gray-600">Terms of Service</Link>
+                        {' '}and{' '}
+                        <Link href="/privacy" target="_blank" className="underline hover:text-gray-600">Privacy Policy</Link>
+                      </p>
+
+                      <div className="w-full max-w-xs border-t border-gray-200 pt-4">
+                        <p className="text-sm text-gray-500 mb-2">Want to join the team first?</p>
+                        <Link
+                          href="/apply"
+                          className="text-primary-blue font-semibold hover:underline text-sm"
+                        >
+                          Submit an application →
+                        </Link>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <p className="font-orbitron text-3xl font-bold text-gray-900 mb-2">Free</p>
+                      <p className="text-gray-500 text-sm mb-6">Apply to get access</p>
+                      <Link
+                        href="/apply"
+                        className="w-full max-w-xs py-4 bg-gradient-to-r from-primary-blue to-blue-700 text-white font-bold rounded-xl hover:opacity-90 transition-all text-center text-lg block"
+                      >
+                        Apply Now
+                      </Link>
+                    </>
+                  )}
+
+                  {!session && (
+                    <p className="mt-4 text-sm text-gray-500">
+                      Already have an account?{' '}
+                      <Link href={`/auth/login?callbackUrl=/lessons/${courseId}`} className="text-primary-blue font-semibold hover:underline">
+                        Sign in
+                      </Link>
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           )}

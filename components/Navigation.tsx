@@ -1,16 +1,62 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import SponsorsBar from './SponsorsBar';
+
+interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  read: boolean;
+  createdAt: string;
+  link?: string;
+}
 
 export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
   const { data: session } = useSession();
+
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const notifRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!session) return;
+    const load = () => {
+      fetch('/api/notifications')
+        .then(r => r.json())
+        .then(d => { setNotifications(d.notifications ?? []); setUnreadCount(d.unreadCount ?? 0); })
+        .catch(() => {});
+    };
+    load();
+    const interval = setInterval(load, 30000);
+    return () => clearInterval(interval);
+  }, [session]);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+        setNotifOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const handleOpenNotif = async () => {
+    setNotifOpen(prev => !prev);
+    if (!notifOpen && unreadCount > 0) {
+      await fetch('/api/notifications', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) });
+      setUnreadCount(0);
+      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -106,6 +152,62 @@ export default function Navigation() {
 
               {session ? (
                 <div className="flex items-center space-x-3">
+                  {/* Notification Bell */}
+                  <div className="relative" ref={notifRef}>
+                    <button
+                      onClick={handleOpenNotif}
+                      className="relative p-2 text-gray-500 hover:text-primary-blue transition-colors"
+                      aria-label="Notifications"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                      </svg>
+                      {unreadCount > 0 && (
+                        <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center leading-none">
+                          {unreadCount > 9 ? '9+' : unreadCount}
+                        </span>
+                      )}
+                    </button>
+
+                    {/* Dropdown */}
+                    {notifOpen && (
+                      <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden">
+                        <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+                          <span className="font-semibold text-gray-900 text-sm">Notifications</span>
+                          {notifications.length > 0 && (
+                            <Link href="/dashboard" onClick={() => setNotifOpen(false)} className="text-xs text-primary-blue hover:underline">View all</Link>
+                          )}
+                        </div>
+                        <div className="max-h-72 overflow-y-auto">
+                          {notifications.length === 0 ? (
+                            <div className="px-4 py-6 text-center text-gray-400 text-sm">No notifications yet</div>
+                          ) : (
+                            notifications.slice(0, 5).map(n => (
+                              <div
+                                key={n.id}
+                                className={`px-4 py-3 border-b border-gray-50 last:border-0 ${!n.read ? 'bg-blue-50' : ''}`}
+                              >
+                                {n.link ? (
+                                  <Link href={n.link} onClick={() => setNotifOpen(false)}>
+                                    <p className="text-sm font-semibold text-gray-900">{n.title}</p>
+                                    <p className="text-xs text-gray-500 mt-0.5">{n.message}</p>
+                                    <p className="text-xs text-gray-400 mt-1">{new Date(n.createdAt).toLocaleDateString()}</p>
+                                  </Link>
+                                ) : (
+                                  <>
+                                    <p className="text-sm font-semibold text-gray-900">{n.title}</p>
+                                    <p className="text-xs text-gray-500 mt-0.5">{n.message}</p>
+                                    <p className="text-xs text-gray-400 mt-1">{new Date(n.createdAt).toLocaleDateString()}</p>
+                                  </>
+                                )}
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
                   <Link href="/dashboard" className="text-sm text-gray-600 hover:text-primary-blue transition-colors">
                     {session.user?.name || session.user?.email}
                   </Link>
