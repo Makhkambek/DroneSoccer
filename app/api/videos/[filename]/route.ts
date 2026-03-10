@@ -10,14 +10,15 @@ const VIDEOS_DIR = path.join(process.cwd(), "private", "videos");
 
 export async function GET(
   request: Request,
-  { params }: { params: { filename: string } }
+  { params }: { params: Promise<{ filename: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) return new Response("Unauthorized", { status: 401 });
 
+    const { filename: rawFilename } = await params;
     // Sanitize filename — prevent path traversal
-    const filename = path.basename(params.filename);
+    const filename = path.basename(rawFilename);
     if (!filename || filename.includes("..")) {
       return new Response("Invalid filename", { status: 400 });
     }
