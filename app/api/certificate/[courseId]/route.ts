@@ -153,7 +153,7 @@ export async function GET(
 
     const pdfBytes = await doc.save();
 
-    return new NextResponse(pdfBytes, {
+    return new NextResponse(Buffer.from(pdfBytes), {
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename="certificate-${courseId}.pdf"`,
