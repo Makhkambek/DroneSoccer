@@ -1,0 +1,50 @@
+[
+  {
+    "id": "1",
+    "name": "Alex Rodriguez",
+    "role": "Team Captain & Striker",
+    "bio": "5-year veteran with multiple championship titles. Specializes in offensive strategies and precision scoring.",
+    "image": "/images/team/member-1.jpg",
+    "achievements": [
+      "World Championship 2023",
+      "National Cup Winner 2022"
+    ],
+    "social": {
+      "twitter": "",
+      "instagram": "",
+      "linkedin": ""
+    }
+  },
+  {
+    "id": "2",
+    "name": "Teshabayev Makhkamek",
+    "role": "Lead Programmer",
+    "bio": "Expert in defensive tactics and zone control. Known for incredible reaction times and strategic positioning.",
+    "image": "/images/team/member-2.jpg",
+    "achievements": [
+      "Best Defender Award 2023",
+      "Regional Champion 2022"
+    ],
+    "social": {
+      "twitter": "",
+      "instagram": "",
+      "linkedin": ""
+    }
+  },
+  {
+    "id": "3",
+    "name": "Michael Johnson",
+    "role": "Head Coach",
+    "bio": "Former professional pilot with 10 years of coaching experience. Developed training programs used worldwide.",
+    "image": "/images/team/member-3.jpg",
+    "achievements": [
+      "Coach of the Year 2023",
+      "International Trainer Certification"
+    ],
+    "social": {
+      "twitter": "",
+      "instagram": "",
+      "linkedin": ""
+    }
+  }
+]

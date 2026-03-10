@@ -1,0 +1,56 @@
+[
+  {
+    "id": "1",
+    "courseId": "1",
+    "title": "Introduction to Drone Components",
+    "description": "Overview of the main parts of a drone: frame, motors, ESCs, flight controller and battery. Learn what each component does.",
+    "order": 1,
+    "durationSeconds": 213,
+    "videoFile": "https://youtu.be/dQw4w9WgXcQ?si=Smbu_zN3l_IFyQjt"
+  },
+  {
+    "id": "2",
+    "courseId": "1",
+    "title": "Understanding Flight Controllers",
+    "description": "Deep dive into flight controllers — how they work, popular options, and how to configure basic settings for your first build.",
+    "order": 2,
+    "durationSeconds": 213,
+    "videoFile": "https://youtu.be/dQw4w9WgXcQ?si=Smbu_zN3l_IFyQjt"
+  },
+  {
+    "id": "3",
+    "courseId": "1",
+    "title": "Assembling Your First Drone",
+    "description": "Step-by-step assembly guide — soldering ESCs, mounting motors, connecting the flight controller and securing the frame.",
+    "order": 3,
+    "durationSeconds": 213,
+    "videoFile": "https://youtu.be/dQw4w9WgXcQ?si=Smbu_zN3l_IFyQjt"
+  },
+  {
+    "id": "4",
+    "courseId": "1",
+    "title": "Pre-flight Safety Checklist",
+    "description": "Essential safety procedures before every flight — checking props, battery voltage, motor direction, and failsafe settings.",
+    "order": 4,
+    "durationSeconds": 213,
+    "videoFile": "https://youtu.be/dQw4w9WgXcQ?si=Smbu_zN3l_IFyQjt"
+  },
+  {
+    "id": "5",
+    "courseId": "1",
+    "title": "Basic Piloting Techniques",
+    "description": "Learn throttle control, hovering, yaw, pitch and roll. Practice routines for building muscle memory as a beginner pilot.",
+    "order": 5,
+    "durationSeconds": 213,
+    "videoFile": "https://youtu.be/dQw4w9WgXcQ?si=Smbu_zN3l_IFyQjt"
+  },
+  {
+    "id": "6",
+    "courseId": "1",
+    "title": "Maintenance and Troubleshooting",
+    "description": "How to inspect and replace broken props, diagnose motor issues, re-solder connections and keep your drone in top condition.",
+    "order": 6,
+    "durationSeconds": 213,
+    "videoFile": "https://youtu.be/dQw4w9WgXcQ?si=Smbu_zN3l_IFyQjt"
+  }
+]

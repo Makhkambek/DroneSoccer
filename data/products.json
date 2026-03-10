@@ -1,0 +1,32 @@
+[
+  {
+    "id": "1",
+    "name": "Professional Drone Soccer Ball - Class 40",
+    "description": "Official 40cm drone with protective cage for professional competitions",
+    "price": 899.99,
+    "category": "Drones",
+    "image": "/images/products/drone-40.jpg",
+    "inStock": true,
+    "featured": true
+  },
+  {
+    "id": "2",
+    "name": "Beginner Drone Soccer Ball - Class 20",
+    "description": "Compact 20cm drone perfect for beginners and youth training",
+    "price": 399.99,
+    "category": "Drones",
+    "image": "/images/products/drone-20.jpg",
+    "inStock": true,
+    "featured": true
+  },
+  {
+    "id": "3",
+    "name": "FPV Racing Drone Kit",
+    "description": "High-speed racing drone with FPV goggles included",
+    "price": 549.99,
+    "category": "Drones",
+    "image": "/images/products/racing-drone.jpg",
+    "inStock": true,
+    "featured": false
+  }
+]

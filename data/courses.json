@@ -1,0 +1,46 @@
+[
+  {
+    "id": "1",
+    "title": "General Drone Course",
+    "description": "Learn the fundamentals of drone technology, assembly, and basic piloting skills. Perfect for absolute beginners.",
+    "price": 4900,
+    "currency": "usd",
+    "duration": "4 weeks",
+    "level": "Beginner",
+    "thumbnail": null,
+    "published": true
+  },
+  {
+    "id": "2",
+    "title": "Drone Racing",
+    "description": "Master high-speed piloting techniques and racing strategies. Take your flying skills to the next level.",
+    "price": 7900,
+    "currency": "usd",
+    "duration": "6 weeks",
+    "level": "Intermediate",
+    "thumbnail": null,
+    "published": true
+  },
+  {
+    "id": "3",
+    "title": "Drone Soccer - Class 40",
+    "description": "Learn competitive drone soccer with larger 40cm drones. Focus on team tactics and strategic play.",
+    "price": 9900,
+    "currency": "usd",
+    "duration": "8 weeks",
+    "level": "Intermediate",
+    "thumbnail": null,
+    "published": true
+  },
+  {
+    "id": "4",
+    "title": "Drone Soccer - Class 20",
+    "description": "Master agile play with compact 20cm drones. Focus on precision, speed, and advanced team coordination.",
+    "price": 12900,
+    "currency": "usd",
+    "duration": "8 weeks",
+    "level": "Advanced",
+    "thumbnail": null,
+    "published": true
+  }
+]
