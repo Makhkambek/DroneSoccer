@@ -52,5 +52,170 @@
     "order": 6,
     "durationSeconds": 213,
     "videoFile": "https://youtu.be/dQw4w9WgXcQ?si=Smbu_zN3l_IFyQjt"
+  },
+
+  {
+    "id": "7",
+    "courseId": "2",
+    "title": "Racing Drone Build Basics",
+    "description": "Learn the specific components needed for a racing build — lightweight frames, high-KV motors, and racing-tuned ESCs.",
+    "order": 1,
+    "durationSeconds": 213,
+    "videoFile": "https://youtu.be/dQw4w9WgXcQ?si=Smbu_zN3l_IFyQjt"
+  },
+  {
+    "id": "8",
+    "courseId": "2",
+    "title": "FPV Goggles and Camera Setup",
+    "description": "Setting up your FPV system — choosing the right camera, VTX power, goggles, and getting a clean video feed.",
+    "order": 2,
+    "durationSeconds": 213,
+    "videoFile": "https://youtu.be/dQw4w9WgXcQ?si=Smbu_zN3l_IFyQjt"
+  },
+  {
+    "id": "9",
+    "courseId": "2",
+    "title": "PID Tuning for Speed",
+    "description": "Understanding PID values and how to tune them for maximum speed and responsiveness on the race track.",
+    "order": 3,
+    "durationSeconds": 213,
+    "videoFile": "https://youtu.be/dQw4w9WgXcQ?si=Smbu_zN3l_IFyQjt"
+  },
+  {
+    "id": "10",
+    "courseId": "2",
+    "title": "Gate and Flag Navigation",
+    "description": "Techniques for flying through gates at high speed — approach angles, throttle management and cornering.",
+    "order": 4,
+    "durationSeconds": 213,
+    "videoFile": "https://youtu.be/dQw4w9WgXcQ?si=Smbu_zN3l_IFyQjt"
+  },
+  {
+    "id": "11",
+    "courseId": "2",
+    "title": "Race Strategy and Lap Times",
+    "description": "How to read a race course, plan your racing line, and shave seconds off your lap times through consistent practice.",
+    "order": 5,
+    "durationSeconds": 213,
+    "videoFile": "https://youtu.be/dQw4w9WgXcQ?si=Smbu_zN3l_IFyQjt"
+  },
+  {
+    "id": "12",
+    "courseId": "2",
+    "title": "Competition Rules and Etiquette",
+    "description": "Official racing rules, frequency management, crash recovery procedures, and professional conduct at events.",
+    "order": 6,
+    "durationSeconds": 213,
+    "videoFile": "https://youtu.be/dQw4w9WgXcQ?si=Smbu_zN3l_IFyQjt"
+  },
+
+  {
+    "id": "13",
+    "courseId": "3",
+    "title": "What is Drone Soccer Class 40?",
+    "description": "Introduction to Class 40 drone soccer — the rules, field dimensions, scoring system, and what makes it different from other drone sports.",
+    "order": 1,
+    "durationSeconds": 213,
+    "videoFile": "https://youtu.be/dQw4w9WgXcQ?si=Smbu_zN3l_IFyQjt"
+  },
+  {
+    "id": "14",
+    "courseId": "3",
+    "title": "Class 40 Drone Specifications",
+    "description": "Detailed look at Class 40 drone specs — cage design, motor limits, battery rules, and allowed modifications.",
+    "order": 2,
+    "durationSeconds": 213,
+    "videoFile": "https://youtu.be/dQw4w9WgXcQ?si=Smbu_zN3l_IFyQjt"
+  },
+  {
+    "id": "15",
+    "courseId": "3",
+    "title": "Offensive Flying Techniques",
+    "description": "How to carry and score with the ball — positioning, speed control, and breaking through the opposing defense.",
+    "order": 3,
+    "durationSeconds": 213,
+    "videoFile": "https://youtu.be/dQw4w9WgXcQ?si=Smbu_zN3l_IFyQjt"
+  },
+  {
+    "id": "16",
+    "courseId": "3",
+    "title": "Defensive Strategies",
+    "description": "Blocking, intercepting and protecting your goal — defensive positioning and communication with teammates.",
+    "order": 4,
+    "durationSeconds": 213,
+    "videoFile": "https://youtu.be/dQw4w9WgXcQ?si=Smbu_zN3l_IFyQjt"
+  },
+  {
+    "id": "17",
+    "courseId": "3",
+    "title": "Team Coordination and Roles",
+    "description": "Assigning player roles, radio communication during matches, and developing team plays for competitive advantage.",
+    "order": 5,
+    "durationSeconds": 213,
+    "videoFile": "https://youtu.be/dQw4w9WgXcQ?si=Smbu_zN3l_IFyQjt"
+  },
+  {
+    "id": "18",
+    "courseId": "3",
+    "title": "Match Preparation and Warm-up",
+    "description": "Pre-match drone checks, battery management during tournaments, and mental preparation for competitive play.",
+    "order": 6,
+    "durationSeconds": 213,
+    "videoFile": "https://youtu.be/dQw4w9WgXcQ?si=Smbu_zN3l_IFyQjt"
+  },
+
+  {
+    "id": "19",
+    "courseId": "4",
+    "title": "Class 20 Overview and Rules",
+    "description": "Introduction to Class 20 — the most agile and compact format of drone soccer, its unique rules and international standards.",
+    "order": 1,
+    "durationSeconds": 213,
+    "videoFile": "https://youtu.be/dQw4w9WgXcQ?si=Smbu_zN3l_IFyQjt"
+  },
+  {
+    "id": "20",
+    "courseId": "4",
+    "title": "Building a Class 20 Drone",
+    "description": "Components specific to Class 20 — ultra-light frames, small motors, and how to balance weight vs. performance.",
+    "order": 2,
+    "durationSeconds": 213,
+    "videoFile": "https://youtu.be/dQw4w9WgXcQ?si=Smbu_zN3l_IFyQjt"
+  },
+  {
+    "id": "21",
+    "courseId": "4",
+    "title": "Precision Control at High Speed",
+    "description": "Micro-adjustment techniques for Class 20 — how to maintain accuracy when flying at top speed in tight spaces.",
+    "order": 3,
+    "durationSeconds": 213,
+    "videoFile": "https://youtu.be/dQw4w9WgXcQ?si=Smbu_zN3l_IFyQjt"
+  },
+  {
+    "id": "22",
+    "courseId": "4",
+    "title": "Advanced Offensive Plays",
+    "description": "Complex multi-player offensive patterns, fake-outs, and quick-pass strategies to break through tough defenses.",
+    "order": 4,
+    "durationSeconds": 213,
+    "videoFile": "https://youtu.be/dQw4w9WgXcQ?si=Smbu_zN3l_IFyQjt"
+  },
+  {
+    "id": "23",
+    "courseId": "4",
+    "title": "Elite Defense and Goalkeeping",
+    "description": "Advanced goalkeeper positioning, shot-blocking reflexes, and counter-attack launch techniques for Class 20.",
+    "order": 5,
+    "durationSeconds": 213,
+    "videoFile": "https://youtu.be/dQw4w9WgXcQ?si=Smbu_zN3l_IFyQjt"
+  },
+  {
+    "id": "24",
+    "courseId": "4",
+    "title": "Tournament Play and Championship Mindset",
+    "description": "How to prepare for national and international competitions — bracket strategy, handling pressure, and peak performance.",
+    "order": 6,
+    "durationSeconds": 213,
+    "videoFile": "https://youtu.be/dQw4w9WgXcQ?si=Smbu_zN3l_IFyQjt"
   }
 ]

@@ -1,49 +1,37 @@
-import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
 
-export default withAuth(
-  function middleware(req) {
-    const token = req.nextauth.token;
-    const pathname = req.nextUrl.pathname;
-    const isAdmin = token?.role === "admin";
+export async function middleware(req: NextRequest) {
+  const pathname = req.nextUrl.pathname;
 
-    // Admin trying to access non-admin pages → redirect to dashboard
-    if (isAdmin && !pathname.startsWith("/admin") && !pathname.startsWith("/api")) {
-      return NextResponse.redirect(new URL("/admin/dashboard", req.url));
-    }
-
-    // Non-admin trying to access admin pages → redirect to admin login
-    if (!isAdmin && pathname.startsWith("/admin/dashboard")) {
-      return NextResponse.redirect(new URL("/admin/login", req.url));
-    }
-
+  // Never touch NextAuth or API routes
+  if (pathname.startsWith("/api")) {
     return NextResponse.next();
-  },
-  {
-    callbacks: {
-      authorized: ({ token, req }) => {
-        const pathname = req.nextUrl.pathname;
-        // Allow public pages without auth
-        if (
-          pathname === "/" ||
-          pathname.startsWith("/about") ||
-          pathname.startsWith("/competitions") ||
-          pathname.startsWith("/shop") ||
-          pathname.startsWith("/apply") ||
-          pathname.startsWith("/auth") ||
-          pathname.startsWith("/admin/login") ||
-          pathname.startsWith("/api") ||
-          pathname.startsWith("/_next") ||
-          pathname.startsWith("/public")
-        ) {
-          return true;
-        }
-        return !!token;
-      },
-    },
   }
-);
+
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  const isAdmin = token?.role === "admin";
+  const isLoggedIn = !!token;
+
+  // Admin on any non-admin page → redirect to dashboard
+  if (isAdmin && !pathname.startsWith("/admin")) {
+    return NextResponse.redirect(new URL("/admin/dashboard", req.url));
+  }
+
+  // Non-admin trying to access admin dashboard → redirect to admin login
+  if (!isAdmin && pathname.startsWith("/admin/dashboard")) {
+    return NextResponse.redirect(new URL("/admin/login", req.url));
+  }
+
+  // Unauthenticated user trying to access protected pages
+  if (!isLoggedIn && (pathname.startsWith("/lessons") || pathname.startsWith("/profile"))) {
+    return NextResponse.redirect(new URL("/auth/login", req.url));
+  }
+
+  return NextResponse.next();
+}
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|icons|manifest.json|hero|sponsors|videos|api/auth).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|icons|manifest.json|hero|sponsors|videos).*)"],
 };

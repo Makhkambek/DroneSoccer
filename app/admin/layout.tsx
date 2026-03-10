@@ -57,15 +57,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const { data: session, status } = useSession();
   const router = useRouter();
   const pathname = usePathname();
-
-  // Login page — render without sidebar
-  if (pathname === '/admin/login') {
-    return <>{children}</>;
-  }
+  const isLoginPage = pathname === '/admin/login';
 
   useEffect(() => {
-    if (status === 'unauthenticated') router.push('/admin/login');
-  }, [status, router]);
+    if (!isLoginPage && status === 'unauthenticated') router.push('/admin/login');
+  }, [status, router, isLoginPage]);
+
+  // Login page — render without sidebar
+  if (isLoginPage) return <>{children}</>;
 
   if (status === 'loading') {
     return (
