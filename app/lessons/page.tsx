@@ -246,10 +246,10 @@ export default function Lessons() {
                       ))}
                     </ul>
                     <Link
-                      href="/apply"
+                      href={`/lessons/${course.id}`}
                       className={`block w-full text-center px-6 py-4 bg-gradient-to-r ${course.gradient} text-white font-bold rounded-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105`}
                     >
-                      Enroll Now
+                      View Course
                     </Link>
                   </div>
                 </div>

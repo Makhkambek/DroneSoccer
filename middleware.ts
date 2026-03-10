@@ -24,8 +24,13 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/admin/login", req.url));
   }
 
-  // Unauthenticated user trying to access protected pages
-  if (!isLoggedIn && (pathname.startsWith("/lessons") || pathname.startsWith("/profile"))) {
+  // Unauthenticated user trying to watch a lesson video (3rd level deep)
+  if (!isLoggedIn && pathname.match(/^\/lessons\/[^/]+\/[^/]+/)) {
+    return NextResponse.redirect(new URL(`/auth/login?callbackUrl=${encodeURIComponent(pathname)}`, req.url));
+  }
+
+  // Unauthenticated user trying to access profile
+  if (!isLoggedIn && pathname.startsWith("/profile")) {
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 

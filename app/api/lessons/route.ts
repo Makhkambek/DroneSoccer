@@ -6,25 +6,33 @@ import { hasPurchasedCourse, getUserPurchases } from "@/lib/purchases";
 import { getUsers } from "@/lib/users";
 import nodemailer from "nodemailer";
 
-// GET /api/lessons?courseId=X — authenticated + purchased students, or admin
+// GET /api/lessons?courseId=X
+// - Public: returns lesson metadata (no videoFile)
+// - Authenticated + purchased (or admin): returns full data including videoFile
 export async function GET(request: Request) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
     const { searchParams } = new URL(request.url);
     const courseId = searchParams.get("courseId");
     if (!courseId) return NextResponse.json({ error: "courseId required" }, { status: 400 });
 
-    const role = (session.user as any)?.role;
-    if (role !== "admin") {
+    const lessons = await getLessonsByCourse(courseId);
+
+    const session = await getServerSession(authOptions);
+    const role = (session?.user as any)?.role;
+
+    // Admin gets everything
+    if (role === "admin") return NextResponse.json(lessons);
+
+    // Authenticated + purchased gets full data
+    if (session) {
       const userId = (session.user as any)?.id;
       const purchased = await hasPurchasedCourse(userId, courseId);
-      if (!purchased) return NextResponse.json({ error: "Purchase required" }, { status: 403 });
+      if (purchased) return NextResponse.json(lessons);
     }
 
-    const lessons = await getLessonsByCourse(courseId);
-    return NextResponse.json(lessons);
+    // Public: strip videoFile so URLs aren't exposed
+    const publicLessons = lessons.map(({ videoFile: _v, ...rest }) => ({ ...rest, videoFile: null }));
+    return NextResponse.json(publicLessons);
   } catch {
     return NextResponse.json({ error: "Failed to fetch lessons" }, { status: 500 });
   }
@@ -44,7 +52,7 @@ export async function POST(request: Request) {
       courseId: String(body.courseId),
       title: String(body.title).trim().slice(0, 200),
       description: (body.description ?? "").slice(0, 2000),
-      videoFile: null,
+      videoFile: body.videoFile ?? null,
       durationSeconds: typeof body.durationSeconds === "number" ? body.durationSeconds : 0,
       order: typeof body.order === "number" ? body.order : 999,
     });
