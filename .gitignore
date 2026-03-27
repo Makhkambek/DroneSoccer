@@ -1,65 +1,37 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
-.yarn/install-state.gz
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
+node_modules/
+dist/
 .DS_Store
-*.pem
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# local env files
-.env*.local
+# env
 .env
+.env.local
+.env*.local
 
-# vercel
-.vercel
+# data (runtime, not committed)
+data/
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-# IDE & agent configs
+# IDE
 .agent/
 .agents/
 .claude/
 .cursor/
-.junie/
 
-# large binary assets (add manually or use Git LFS)
-public/hero/*.jpg
-public/hero/*.png
-public/videos/*
-!public/videos/README.md
+# build
+*.tsbuildinfo
 
-# sensitive runtime data
-data/users.json
-data/applications.json
-data/purchases.json
-data/progress.json
-data/rate-limits.json
-data/reset-tokens.json
-data/verify-tokens.json
+# logs
+npm-debug.log*
 
-# internal dev docs
-ORQA_*.md
-IMPLEMENTATION_REPORT.md
-FRONTEND_REDESIGN_PLAN.md
-REFACTORING_EXAMPLES.md
+# old frontend (kept locally)
+app/
+components/
+lib/
+public/
+scripts/
+middleware.ts
+next-env.d.ts
+next.config.ts
+postcss.config.mjs
+tailwind.config.ts
+render.yaml
+backend/

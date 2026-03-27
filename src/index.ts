@@ -4,7 +4,7 @@ import path from "path";
 
 // Load env from parent .env.local for dev (reuse existing config)
 import fs from "fs";
-const envPath = path.join(__dirname, "../../.env.local");
+const envPath = path.join(__dirname, "../.env.local");
 if (fs.existsSync(envPath)) {
   const envContent = fs.readFileSync(envPath, "utf-8");
   for (const line of envContent.split("\n")) {
