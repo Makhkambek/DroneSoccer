@@ -1,11 +1,13 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { VideoWatermark } from './VideoPlayer';
 
 interface IntroVideoOverlayProps {
   videoFile: string;
   totalDuration: number; // seconds
   onComplete: () => void;
+  userId?: string;
 }
 
 function getYouTubeId(url: string): string | null {
@@ -21,14 +23,14 @@ function getYouTubeId(url: string): string | null {
   return null;
 }
 
-export default function IntroVideoOverlay({ videoFile, totalDuration, onComplete }: IntroVideoOverlayProps) {
+export default function IntroVideoOverlay({ videoFile, totalDuration, onComplete, userId }: IntroVideoOverlayProps) {
   const youtubeId = getYouTubeId(videoFile);
 
   if (youtubeId) {
-    return <YouTubeIntroOverlay videoId={youtubeId} totalDuration={totalDuration} onComplete={onComplete} />;
+    return <YouTubeIntroOverlay videoId={youtubeId} totalDuration={totalDuration} onComplete={onComplete} userId={userId} />;
   }
 
-  return <LocalIntroOverlay videoFile={videoFile} totalDuration={totalDuration} onComplete={onComplete} />;
+  return <LocalIntroOverlay videoFile={videoFile} totalDuration={totalDuration} onComplete={onComplete} userId={userId} />;
 }
 
 // ─── YouTube Intro (no-skip via elapsed-time tracking) ────────────────────────
@@ -40,10 +42,11 @@ declare global {
   }
 }
 
-function YouTubeIntroOverlay({ videoId, totalDuration, onComplete }: {
+function YouTubeIntroOverlay({ videoId, totalDuration, onComplete, userId }: {
   videoId: string;
   totalDuration: number;
   onComplete: () => void;
+  userId?: string;
 }) {
   const playerRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -103,6 +106,8 @@ function YouTubeIntroOverlay({ videoId, totalDuration, onComplete }: {
     const initPlayer = () => {
       if (!containerRef.current) return;
       playerRef.current = new window.YT.Player(containerRef.current, {
+        width: '100%',
+        height: '100%',
         videoId,
         playerVars: {
           autoplay: 1,
@@ -169,26 +174,26 @@ function YouTubeIntroOverlay({ videoId, totalDuration, onComplete }: {
   const ss = String(remaining % 60).padStart(2, '0');
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center select-none">
+    <div className="fixed inset-0 z-[9999] bg-black flex flex-col select-none">
       {/* Header */}
-      <div className="w-full max-w-3xl px-4 mb-4 text-center">
+      <div className="px-6 py-3 text-center flex-shrink-0">
         <p className="font-orbitron text-white text-lg font-bold mb-1">Welcome to Drone Soccer</p>
         <p className="text-white/70 text-sm">Please watch this introduction video completely before accessing the course.</p>
       </div>
 
-      {/* Video container — transparent overlay blocks seeking on the progress bar */}
-      <div className="w-full max-w-3xl px-4 relative">
-        <div ref={containerRef} className="w-full rounded-xl overflow-hidden shadow-2xl" style={{ aspectRatio: '16/9' }} />
-        {/* Invisible overlay to block right-click and progress bar drag */}
+      {/* Video container — fills remaining space */}
+      <div className="flex-1 relative min-h-0 [&_iframe]:!w-full [&_iframe]:!h-full">
+        <div ref={containerRef} className="absolute inset-0" />
+        <VideoWatermark userId={userId} />
         <div
-          className="absolute inset-0 rounded-xl"
+          className="absolute inset-0"
           style={{ pointerEvents: 'none' }}
           onContextMenu={(e) => e.preventDefault()}
         />
       </div>
 
       {/* Progress bar */}
-      <div className="w-full max-w-3xl px-4 mt-4">
+      <div className="px-6 py-3 flex-shrink-0">
         <div className="flex justify-between text-white/60 text-xs mb-1">
           <span>Progress</span>
           <span>{mm}:{ss} remaining</span>
@@ -211,7 +216,7 @@ function YouTubeIntroOverlay({ videoId, totalDuration, onComplete }: {
 
 // ─── Local video Intro (full anti-skip) ───────────────────────────────────────
 
-function LocalIntroOverlay({ videoFile, totalDuration, onComplete }: IntroVideoOverlayProps) {
+function LocalIntroOverlay({ videoFile, totalDuration, onComplete, userId }: IntroVideoOverlayProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const lastValidTimeRef = useRef(0);
   const [currentTime, setCurrentTime] = useState(0);
@@ -292,23 +297,24 @@ function LocalIntroOverlay({ videoFile, totalDuration, onComplete }: IntroVideoO
   const ss = String(remaining % 60).padStart(2, '0');
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center">
-      <div className="w-full max-w-3xl px-4 mb-4 text-center">
+    <div className="fixed inset-0 z-[9999] bg-black flex flex-col">
+      <div className="px-6 py-3 text-center flex-shrink-0">
         <p className="font-orbitron text-white text-lg font-bold mb-1">Welcome to Drone Soccer</p>
         <p className="text-white/70 text-sm">Please watch this introduction video completely before accessing the course.</p>
       </div>
-      <div className="w-full max-w-3xl px-4">
+      <div className="flex-1 relative min-h-0">
         <video
           ref={videoRef}
           src={`/api/videos/${videoFile}`}
-          className="w-full rounded-xl shadow-2xl"
+          className="absolute inset-0 w-full h-full object-contain"
           playsInline
           disablePictureInPicture
           controlsList="nodownload nofullscreen noremoteplayback"
           onContextMenu={(e) => e.preventDefault()}
         />
+        <VideoWatermark userId={userId} />
       </div>
-      <div className="w-full max-w-3xl px-4 mt-4">
+      <div className="px-6 py-3 flex-shrink-0">
         <div className="flex justify-between text-white/60 text-xs mb-1">
           <span>Progress</span>
           <span>{mm}:{ss} remaining</span>
@@ -321,7 +327,7 @@ function LocalIntroOverlay({ videoFile, totalDuration, onComplete }: IntroVideoO
         </div>
         <p className="text-white/40 text-xs text-center mt-2">The course will unlock automatically when the video finishes.</p>
       </div>
-      {saving && <div className="mt-4 text-white/80 text-sm">Saving progress...</div>}
+      {saving && <div className="absolute bottom-16 left-1/2 -translate-x-1/2 text-white/80 text-sm">Saving progress...</div>}
     </div>
   );
 }

@@ -8,6 +8,8 @@ import { createVerifyToken } from "@/lib/verifyTokens";
 
 const DATA_FILE = path.join(process.cwd(), "data", "applications.json");
 
+const PASSPORT_PHOTOS_DIR = path.join(process.cwd(), "data", "passport-photos");
+
 interface Application {
   id: string;
   firstName: string;
@@ -15,6 +17,8 @@ interface Application {
   email: string;
   phone: string;
   telegram: string;
+  passportNumber: string;
+  passportPhoto?: string;
   age: string;
   experience: string;
   course: string;
@@ -91,6 +95,10 @@ function buildEmailHtml(data: Omit<Application, "id" | "submittedAt">, submitted
             <div class="field-label">Telegram</div>
             <div class="field-value">@${escapeHtml(data.telegram)}</div>
           </div>
+          <div class="field">
+            <div class="field-label">Passport Number</div>
+            <div class="field-value">${escapeHtml(data.passportNumber || "—")}</div>
+          </div>
           <div class="divider"></div>
           <div class="field">
             <div class="field-label">Age</div>
@@ -158,9 +166,14 @@ export async function POST(request: Request) {
       );
     }
 
-    const body = await request.json();
+    const formData = await request.formData();
+    const body: Record<string, string> = {};
+    for (const [key, value] of formData.entries()) {
+      if (typeof value === 'string') body[key] = value;
+    }
+    const passportPhotoFile = formData.get('passportPhoto') as File | null;
 
-    const requiredFields = ["firstName", "lastName", "email", "phone", "telegram", "age", "experience", "course"];
+    const requiredFields = ["firstName", "lastName", "email", "phone", "telegram", "passportNumber", "age", "experience", "course"];
     for (const field of requiredFields) {
       if (!body[field] || String(body[field]).trim() === "") {
         return NextResponse.json(
@@ -170,12 +183,44 @@ export async function POST(request: Request) {
       }
     }
 
+    // Validate passport number (Uzbekistan format: 2 uppercase letters + 7 digits)
+    const passportRegex = /^[A-Z]{2}\d{7}$/;
+    if (!passportRegex.test(body.passportNumber.toUpperCase())) {
+      return NextResponse.json(
+        { error: "Invalid passport number. Format: 2 letters + 7 digits (e.g. AD1234567)" },
+        { status: 400 }
+      );
+    }
+    body.passportNumber = body.passportNumber.toUpperCase();
+
+    // Validate passport photo
+    if (!passportPhotoFile || passportPhotoFile.size === 0) {
+      return NextResponse.json(
+        { error: "Passport photo is required" },
+        { status: 400 }
+      );
+    }
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(passportPhotoFile.type)) {
+      return NextResponse.json(
+        { error: "Passport photo must be JPG, PNG or WebP" },
+        { status: 400 }
+      );
+    }
+    if (passportPhotoFile.size > 5 * 1024 * 1024) {
+      return NextResponse.json(
+        { error: "Passport photo must be under 5MB" },
+        { status: 400 }
+      );
+    }
+
     const fieldMaxLengths: Record<string, number> = {
       firstName: 100,
       lastName: 100,
       email: 254,
       phone: 30,
       telegram: 50,
+      passportNumber: 9,
       age: 3,
       experience: 50,
       course: 50,
@@ -217,13 +262,27 @@ export async function POST(request: Request) {
       0
     );
 
+    const appId = String(maxId + 1);
+
+    // Save passport photo
+    let passportPhotoFilename = "";
+    if (passportPhotoFile) {
+      await fs.mkdir(PASSPORT_PHOTOS_DIR, { recursive: true });
+      const ext = passportPhotoFile.type === 'image/png' ? '.png' : passportPhotoFile.type === 'image/webp' ? '.webp' : '.jpg';
+      passportPhotoFilename = `${appId}_${Date.now()}${ext}`;
+      const buffer = Buffer.from(await passportPhotoFile.arrayBuffer());
+      await fs.writeFile(path.join(PASSPORT_PHOTOS_DIR, passportPhotoFilename), buffer);
+    }
+
     const newApplication: Application = {
-      id: String(maxId + 1),
+      id: appId,
       firstName: body.firstName,
       lastName: body.lastName,
       email: body.email,
       phone: body.phone,
       telegram: body.telegram,
+      passportNumber: body.passportNumber,
+      passportPhoto: passportPhotoFilename || undefined,
       age: body.age,
       experience: body.experience,
       course: body.course,

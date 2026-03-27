@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Orbitron } from "next/font/google";
 import "./globals.css";
-import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
 import Providers from "@/components/Providers";
+import LayoutShell from "@/components/LayoutShell";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -44,9 +43,7 @@ export default function RootLayout({
       </head>
       <body className="font-inter">
         <Providers>
-          <Navigation />
-          <main>{children}</main>
-          <Footer />
+          <LayoutShell>{children}</LayoutShell>
         </Providers>
       </body>
     </html>

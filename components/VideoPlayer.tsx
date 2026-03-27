@@ -32,7 +32,7 @@ const MARK_CONFIGS = [
   { x: 15, y: 65, dx: 0.3, dy: -0.22 },
 ];
 
-function VideoWatermark({ userId, onTamper }: { userId?: string; onTamper?: () => void }) {
+export function VideoWatermark({ userId, onTamper }: { userId?: string; onTamper?: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [positions, setPositions] = useState(MARK_CONFIGS.map(c => ({ x: c.x, y: c.y })));
   const dirsRef = useRef(MARK_CONFIGS.map(c => ({ x: c.dx, y: c.dy })));

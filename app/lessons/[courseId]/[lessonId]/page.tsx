@@ -91,15 +91,20 @@ export default function LessonPage({ params }: { params: Promise<{ courseId: str
   if (!lesson) return null;
 
   return (
-    <div className="min-h-screen bg-gray-900 pt-20">
-      <div className="max-w-5xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gray-900">
+      <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-white/50 mb-6">
-          <Link href="/lessons" className="hover:text-white">Courses</Link>
-          <span>/</span>
-          <Link href={`/lessons/${courseId}`} className="hover:text-white">Course</Link>
-          <span>/</span>
-          <span className="text-white/80">Lesson {lesson.order}</span>
+        <div className="flex items-center justify-between text-sm text-white/50 mb-6">
+          <div className="flex items-center gap-2">
+            <Link href="/lessons" className="hover:text-white">Courses</Link>
+            <span>/</span>
+            <Link href={`/lessons/${courseId}`} className="hover:text-white">Course</Link>
+            <span>/</span>
+            <span className="text-white/80">Lesson {lesson.order}</span>
+          </div>
+          {(session?.user as any)?.id && (
+            <span className="text-white/30 text-xs font-mono">ID: {(session?.user as any)?.id}</span>
+          )}
         </div>
 
         {/* Video Player */}

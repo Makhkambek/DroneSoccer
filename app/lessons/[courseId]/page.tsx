@@ -148,6 +148,7 @@ export default function CoursePage({ params }: { params: Promise<{ courseId: str
           videoFile={introVideo.videoFile}
           totalDuration={introVideo.duration}
           onComplete={handleIntroComplete}
+          userId={(session?.user as any)?.id}
         />
       )}
 

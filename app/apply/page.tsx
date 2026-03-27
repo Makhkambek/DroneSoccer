@@ -9,12 +9,15 @@ export default function Apply() {
     lastName: '',
     email: '',
     phone: '',
-    telegram: '', // Добавлено новое поле
+    telegram: '',
+    passportNumber: '',
     age: '',
     experience: '',
     course: '',
     message: '',
   });
+  const [passportPhoto, setPassportPhoto] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
 
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -49,12 +52,13 @@ export default function Apply() {
     setError(null);
 
     try {
+      const body = new FormData();
+      Object.entries(formData).forEach(([key, val]) => body.append(key, val));
+      if (passportPhoto) body.append('passportPhoto', passportPhoto);
+
       const response = await fetch('/api/apply', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        body,
       });
 
       const data = await response.json();
@@ -241,6 +245,58 @@ export default function Apply() {
                     className="w-full pl-8 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary-blue focus:outline-none transition-colors"
                     placeholder="username"
                   />
+                </div>
+              </div>
+
+              {/* Passport */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="passportNumber" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Passport Number <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="passportNumber"
+                    name="passportNumber"
+                    value={formData.passportNumber}
+                    onChange={handleChange}
+                    required
+                    pattern="^[A-Z]{2}\d{7}$"
+                    maxLength={9}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary-blue focus:outline-none transition-colors uppercase"
+                    placeholder="AD1234567"
+                  />
+                  <p className="text-xs text-gray-400 mt-1">Format: 2 letters + 7 digits (e.g. AD1234567)</p>
+                </div>
+
+                <div>
+                  <label htmlFor="passportPhoto" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Photo with Passport <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="file"
+                      id="passportPhoto"
+                      accept="image/jpeg,image/png,image/webp"
+                      required
+                      onChange={(e) => {
+                        const file = e.target.files?.[0] || null;
+                        setPassportPhoto(file);
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => setPhotoPreview(reader.result as string);
+                          reader.readAsDataURL(file);
+                        } else {
+                          setPhotoPreview(null);
+                        }
+                      }}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary-blue focus:outline-none transition-colors file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:bg-primary-blue file:text-white file:text-sm file:font-semibold file:cursor-pointer"
+                    />
+                    {photoPreview && (
+                      <img src={photoPreview} alt="Preview" className="mt-2 h-24 rounded-lg object-cover" />
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-400 mt-1">Selfie holding your passport. Max 5MB, JPG/PNG</p>
                 </div>
               </div>
 
